@@ -7,3 +7,5 @@ class Task(models.Model):
     author_ip = models.CharField(max_length=45)
     created_date = models.DateTimeField(auto_now_add=True)
     done_date = models.DateTimeField(blank=True, null=True)
+    def __str__(self):
+        return self.title
