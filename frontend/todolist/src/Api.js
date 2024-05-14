@@ -12,20 +12,20 @@ export const fetchToDoList = async () => {
   }
 };
 
-export const addToDo = async (todoData) => {
+export const addTask = async (taskData) => {
   try {
-    const response = await axios.post(`${API_URL}/todolist/`, todoData);
-    return response.data;
+    const response = await axios.post(`${API_URL}/todolist/`, taskData);
+    return response.data
   } catch (error) {
     console.error('Error adding todo:', error);
     return null;
   }
 };
 
-export const removeToDo = async (todoId) => {
+export const deleteTask = async (taskId) => {
     try {
-      const response = await axios.delete(`${API_URL}/todolist/`, todoId);
-      return response.data;
+      await axios.delete(`${API_URL}/todolist/${taskId}/`);
+      console.log(`Task with ID ${taskId} deleted successfully`)
     } catch (error) {
       console.error('Error adding todo:', error);
       return null;

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, FormControlLabel, Checkbox } from '@mui/material';
-import { addToDo } from '../Api';
 
 const AddTask = ({ onAdd }) => {
   const [open, setOpen] = useState(false);
@@ -16,17 +15,15 @@ const AddTask = ({ onAdd }) => {
     setOpen(false);
   };
 
-  const handleSubmit = async event => {
+  const handleSubmit = event => {
     event.preventDefault();
     try {
-      const newToDo = await addToDo({ title, done, done_date: done ? new Date().toISOString() : null });
-      console.log("Hejo")
-      if (newToDo && typeof onAdd === 'function') {
+      const newToDo = { title, done, done_date: done ? new Date().toISOString() : null };
+      if (newToDo) {
         onAdd(newToDo);
         setTitle('');
         setDone(false);
         setDoneDate('');
-        console.log('zamykam')
         handleClose();
       }
     } catch (error) {
@@ -36,11 +33,11 @@ const AddTask = ({ onAdd }) => {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpen}>
-        Dodaj zadanie
+      <Button style={{width: '80%'}} variant="contained" color="primary" onClick={handleOpen}>
+        Add task
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Dodaj nowe zadanie</DialogTitle>
+        <DialogTitle>Add new Task</DialogTitle>
         <DialogContent>
         <form onSubmit={handleSubmit}>
             <TextField
@@ -51,7 +48,7 @@ const AddTask = ({ onAdd }) => {
             />
             <FormControlLabel
               control={<Checkbox checked={done} onChange={event => setDone(event.target.checked)} />}
-              label="Zadanie zrobione"
+              label="Task done"
             />
             {done && (
               <TextField
@@ -62,8 +59,8 @@ const AddTask = ({ onAdd }) => {
               />
             )}
             <DialogActions>
-              <Button onClick={handleClose}>Anuluj</Button>
-              <Button type="submit" variant="contained" color="primary">Dodaj</Button>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button type="submit" variant="contained" color="primary">Add</Button>
             </DialogActions>
           </form>
         </DialogContent>

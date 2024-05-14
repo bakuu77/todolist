@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, FormControlLabel, Checkbox } from '@mui/material';
+
+const API_URL = 'http://localhost:8000';
 
 const EditTaskDialog = ({ task, onUpdate }) => {
   const [open, setOpen] = useState(false);
@@ -15,14 +17,32 @@ const EditTaskDialog = ({ task, onUpdate }) => {
   };
 
   const handleChange = event => {
-    const { name, value } = event.target;
-    setEditedTask({ ...editedTask, [name]: value });
+    const { name, value, checked } = event.target;
+    let newValue = value;
+    if (event.target.type ==='checkbox') {
+      newValue = checked;
+      if (checked) {
+        const doneDate = new Date().toISOString();
+      setEditedTask({ ...editedTask, [name]: newValue, done_date: doneDate });
+      } else {
+        setEditedTask({ ...editedTask, [name]: newValue, done_date: null });
+      }
+    } else {
+      if (name === 'done' && !checked) {
+        setEditedTask({ ...editedTask, [name]: newValue, done_date: null });
+      } else {
+        if (name === 'done_date' && editedTask.done) {
+          newValue = new Date().toISOString();
+        }
+        setEditedTask({ ...editedTask, [name]: newValue });
+      }
+    }
   };
 
   const handleSubmit = async event => {
     event.preventDefault();
     try {
-      await axios.put(`/todolist/${task.id}`, editedTask);
+      await axios.put(`${API_URL}/todolist/${task.id}/`, editedTask);
       onUpdate(editedTask);
       handleClose();
     } catch (error) {
@@ -47,19 +67,17 @@ const EditTaskDialog = ({ task, onUpdate }) => {
               fullWidth
               required
             />
-            <TextField
+            <FormControlLabel
+              control={<Checkbox name="done" checked={editedTask.done} onChange={handleChange} />}
               label="Done"
-              name="done"
-              type="checkbox"
-              checked={editedTask.done}
-              onChange={handleChange}
             />
-            <Button type="submit">Update</Button>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button type="submit" variant="contained" color="primary">Update</Button>
+            </DialogActions>
           </form>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-        </DialogActions>
+        
       </Dialog>
     </div>
   );

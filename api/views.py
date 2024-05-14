@@ -48,7 +48,21 @@ def task_detail(request, task_id):
                 'done_date': task.done_date.strftime("%Y-%m-%d %H:%M:%S") if task.done_date else None}
         json_data = json.dumps(data, indent=4)
         return HttpResponse(json_data, content_type='application/json')
-
+    
+    elif request.method == 'PUT':
+        if request.body:
+            try:
+                data = json.loads(request.body)
+                task.title = data.get('title', task.title)
+                task.done = data.get('done', task.done)
+                task.done_date = data.get('done_date', task.done_date)
+                task.save()
+                return JsonResponse({'message': 'Task created successfully'}, status=201)
+            except json.JSONDecodeError:
+                return JsonResponse({'error': 'Wrong JSON data'}, status=400)
+        else:
+            return JsonResponse({'error': 'Empty body of the request'}, status=400)
+    
     elif request.method == 'DELETE':
         task.delete()
-        return JsonResponse({'message': 'Task deleted successfully'}, status=204)
+        return HttpResponse({'message': 'Task deleted successfully'}, status=200)
