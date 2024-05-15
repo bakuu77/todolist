@@ -18,7 +18,7 @@ const AddTask = ({ onAdd }) => {
   const handleSubmit = event => {
     event.preventDefault();
     try {
-      const newToDo = { title, done, done_date: done ? new Date().toISOString() : null };
+      const newToDo = { title, done, done_date: done ? new Date().toISOString : null };
       if (newToDo) {
         onAdd(newToDo);
         setTitle('');

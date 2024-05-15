@@ -28,10 +28,8 @@ const ToDoList = () => {
 
   const handleAddTask = async (newTask) => {
     try {
-      const addedTask = await addTask(newTask);
-      if (addedTask) {
-        fetchData();
-      }
+      await addTask(newTask);
+      fetchData();
     } catch (error) {
       console.error('Error adding task: ', error)
     }
@@ -65,8 +63,7 @@ const ToDoList = () => {
   return (
     <>
       <div style={{ height: 600, width: '100%', marginBottom: '20px' }}>
-        <div style={{ width: '40%', margin: 'Auto', marginTop: '30px', marginBottom: '30px'}}>
-          Add a new task!
+        <div style={{ width: '40%', textAlign: 'center', margin: 'Auto', marginTop: '30px', marginBottom: '30px'}}>
           <AddTask onAdd={handleAddTask} />
         </div>
         <div style={{ height:500 }}>

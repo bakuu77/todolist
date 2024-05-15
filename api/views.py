@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -7,11 +8,12 @@ import json
 
 @csrf_exempt
 def task_list(request):
+    print(datetime.now())
     if request.method == 'GET':
         tasks = Task.objects.all()
         data = [{'id': task.id, 'title': task.title, 'done': task.done, 'author_ip': task.author_ip,
-                 'created_date': task.created_date.strftime("%Y-%m-%d %H:%M:%S"),
-                 'done_date': task.done_date.strftime("%Y-%m-%d %H:%M:%S") if task.done_date else None}
+                 'created_date': timezone.localtime(task.created_date).strftime("%Y-%m-%d %H:%M:%S"),
+                 'done_date': timezone.localtime(task.done_date).strftime("%Y-%m-%d %H:%M:%S") if task.done_date else None}
                 for task in tasks]
         json_data = json.dumps(data, indent=4)
         return HttpResponse(json_data, content_type='application/json')
@@ -44,8 +46,8 @@ def task_detail(request, task_id):
 
     if request.method == 'GET':
         data = {'id': task.id, 'title': task.title, 'done': task.done, 'author_ip': task.author_ip,
-                'created_date': task.created_date.strftime("%Y-%m-%d %H:%M:%S"),
-                'done_date': task.done_date.strftime("%Y-%m-%d %H:%M:%S") if task.done_date else None}
+                'created_date': timezone.localtime(task.created_date).strftime("%Y-%m-%d %H:%M:%S"),
+                'done_date': timezone.localtime(task.done_date).strftime("%Y-%m-%d %H:%M:%S") if task.done_date else None}
         json_data = json.dumps(data, indent=4)
         return HttpResponse(json_data, content_type='application/json')
     
